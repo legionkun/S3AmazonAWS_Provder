@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:11.3-alpine
+    container_name: products-db
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=1234
+    ports:
+      - '5432:5432'
