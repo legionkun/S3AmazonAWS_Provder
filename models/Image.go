@@ -4,9 +4,9 @@ import "time"
 
 type Image struct {
 	Id          uint64    `json:"Id"`
-	Url         string    `json: "Url"`
+	Name        string    `json: "Name"`
 	ContentType string    `json:"ContentType"`
-	Data        string    `json:"Data"`
+	Url         string    `json: "Url"`
 	Size        int64     `json:"Size"`
 	ProductID   uint64    `json:"ProductID,omitempty"`
 	CreatedAt   time.Time `json:"created_at"`

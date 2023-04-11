@@ -4,7 +4,9 @@ import (
 	"ImageS3-Service/phuoc/dto"
 	"ImageS3-Service/phuoc/helper"
 	"ImageS3-Service/phuoc/inter"
+	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -42,19 +44,30 @@ func (p *Image_Handle) AddNewImage(context *gin.Context) {
 		info.Id = uint64(ProID)
 		info.Filename = img.Filename
 		info.ContentType = imgConvertSmaller.ContentType
-		data := imgConvertSmaller.DataURI()
-		info.Data = data
+		domain := os.Getenv("S3Domain")
+		info.Url = fmt.Sprintf(domain + "/" + info.Filename)
 		info.Size = int64(imgConvertSmaller.Size)
-		p.ImaService.AddNewImage(info)
-		err := p.Pro_s3.SaveFileUpload(imgConvertSmaller.Data, info.Filename)
-		if err != nil {
-			res := helper.BuildErrorResponse("Failed to process request ", "Cannot upload your data to S3 - Please check again", helper.EmptyObj{})
+		erro := p.Pro_s3.SaveFileUpload(imgConvertSmaller.Data, info.Filename)
+		if erro != nil {
+			res := helper.BuildErrorResponse("Failed to process request ", "Cannot save image to database or S3 - Please check again", map[string]interface{}{
+				"Problem at S3": erro,
+			})
 			context.JSON(http.StatusBadRequest, res)
+		} else {
+			err := p.ImaService.AddNewImage(info)
+			if err != nil {
+				res := helper.BuildErrorResponse("Failed to process request ", "Cannot save image to database or S3 - Please check again", map[string]interface{}{
+					"Problem at DB": err.Error(),
+				})
+				context.JSON(http.StatusBadRequest, res)
+			} else {
+				response := helper.BuildResponse(true, "OK", map[string]interface{}{
+					"Product ID": getID,
+					"URL":        info.Url,
+				})
+				context.JSON(http.StatusCreated, response)
+			}
 		}
-		response := helper.BuildResponse(true, "OK", map[string]interface{}{
-			"Product ID": getID,
-		})
-		context.JSON(http.StatusCreated, response)
 	}
 }
 
@@ -68,7 +81,12 @@ func (p *Image_Handle) GetImageByID(context *gin.Context) {
 		response := helper.BuildErrorResponse("Failed to get id", "No param id were found", helper.EmptyObj{})
 		context.JSON(http.StatusBadRequest, response)
 	} else {
-		data := p.ImaService.GetData(ID, ProID)
-		context.JSON(http.StatusOK, data)
+		data, _ := p.ImaService.GetData(ID, ProID)
+		if data == nil {
+			response := helper.BuildErrorResponse("Failed to get id", "No data were found", helper.EmptyObj{})
+			context.JSON(http.StatusOK, response)
+		} else {
+			context.JSON(http.StatusOK, data)
+		}
 	}
 }

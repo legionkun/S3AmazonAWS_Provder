@@ -5,8 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -45,20 +47,40 @@ func NewS3Provider(bucketName string, region string, apikey string, secrecKey st
 	return &provider
 }
 
-func (provider *S3Provider) SaveFileUpload(data []byte, dst string) error {
+func (provider *S3Provider) SaveFileUpload(data []byte, dst string) map[string]interface{} {
 	fileBytes := bytes.NewReader(data)
 	fileType := http.DetectContentType(data)
 	_, err := s3.New(provider.session).PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String(provider.BucketName),
-		Key:         aws.String("Bye bye"),
+		Key:         aws.String(dst),
 		ACL:         aws.String("private"),
 		ContentType: aws.String(fileType),
 		Body:        fileBytes,
 	})
 	if err != nil {
-		log.Fatalln(err)
+		if aerr, ok := err.(awserr.Error); ok {
+			errAWS := map[string]interface{}{
+				"Code":    aerr.Code(),
+				"Error":   aerr.Error(),
+				"Message": aerr.Message(),
+			}
+			log.Println(err.Error())
+			return errAWS
+		}
 	}
 	return nil
+}
+
+func (provider *S3Provider) SaveFileUploadforClientbyURL(dst string) (string, error) {
+	data, err := s3.New(provider.session).PutObjectRequest(&s3.PutObjectInput{
+		Bucket: aws.String(provider.BucketName),
+		Key:    aws.String(dst),
+		ACL:    aws.String("private"),
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return data.Presign(time.Second * 60)
 }
 
 func SetUps3ProviderConfig() *S3Provider {
@@ -66,5 +88,6 @@ func SetUps3ProviderConfig() *S3Provider {
 	Region := os.Getenv("S3Region")
 	ApiKey := os.Getenv("S3ApiKey")
 	Secrect := os.Getenv("S3SecrecKey")
-	return NewS3Provider(BucketName, Region, ApiKey, Secrect, "")
+	Domain := os.Getenv("S3Domain")
+	return NewS3Provider(BucketName, Region, ApiKey, Secrect, Domain)
 }

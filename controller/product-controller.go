@@ -26,8 +26,12 @@ func (p *Pro_Controller) InsertProductByRequest(context *gin.Context) {
 		res := helper.BuildErrorResponse("Failed to process request ", errDTO.Error(), helper.EmptyObj{})
 		context.JSON(http.StatusBadRequest, res)
 	} else {
-		result := p.Service.InsertProductByRequest(createProduct)
-		response := helper.BuildResponse(true, "OK", result)
-		context.JSON(http.StatusOK, response)
+		result, err := p.Service.InsertProductByRequest(createProduct)
+		if err != nil {
+			context.JSON(http.StatusInternalServerError, err.Error())
+		} else {
+			response := helper.BuildResponse(true, "OK", result)
+			context.JSON(http.StatusOK, response)
+		}
 	}
 }

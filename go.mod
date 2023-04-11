@@ -23,9 +23,12 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
+	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+	github.com/valyala/fasttemplate v1.2.1 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
@@ -40,9 +43,10 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/joho/godotenv v1.4.0
 	github.com/json-iterator/go v1.1.9 // indirect
+	github.com/labstack/gommon v0.4.0
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mashingan/smapping v0.1.13
-	github.com/mattn/go-isatty v0.0.12 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/olahol/go-imageupload v1.0.1

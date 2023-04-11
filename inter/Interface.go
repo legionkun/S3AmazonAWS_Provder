@@ -8,7 +8,7 @@ import (
 )
 
 type ProductRepository interface {
-	InsertProductByRequest(p dto.ProductInsert_Request) *models.Product
+	InsertProductByRequest(p dto.ProductInsert_Request) (*models.Product, error)
 }
 
 type ProController interface {
@@ -16,17 +16,17 @@ type ProController interface {
 }
 
 type ProService interface {
-	InsertProductByRequest(p dto.ProductInsert_Request) *models.Product
+	InsertProductByRequest(p dto.ProductInsert_Request) (*models.Product, error)
 }
 
 type ImaRepository interface {
-	AddNewImage(i dto.GetDataFormImage)
-	GetImageByIdProduct(id uint64, proId uint64) (data dto.GetDatabyIdAndProID)
+	AddNewImage(i dto.GetDataFormImage) error
+	GetImageByIdProduct(id uint64, proId uint64) (*dto.GetDatabyIdAndProID, error)
 }
 
 type ImageService interface {
-	AddNewImage(i dto.GetDataFormImage)
-	GetData(id uint64, proId uint64) (data dto.GetDatabyIdAndProID)
+	AddNewImage(i dto.GetDataFormImage) error
+	GetData(id uint64, proId uint64) (*dto.GetDatabyIdAndProID, error)
 }
 
 type ImageController interface {
@@ -39,5 +39,5 @@ type S3Provider interface {
 }
 
 type S3ProviderService interface {
-	SaveFileUpload(data []byte, dst string) error
+	SaveFileUpload(data []byte, dst string) map[string]interface{}
 }

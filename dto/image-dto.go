@@ -8,7 +8,7 @@ type GetDataFormImage struct {
 	Id          uint64
 	Filename    string
 	ContentType string
-	Data        string
+	Url         string
 	Size        int64
 }
 
@@ -16,5 +16,5 @@ type GetDatabyIdAndProID struct {
 	Id          uint64 `json:"ID"`
 	ProId       uint64 `json:"ProductID"`
 	ContentType string `json:"ContentType"`
-	Data        string `json:"Data"`
+	Url         string `json:"Url"`
 }

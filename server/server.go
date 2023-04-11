@@ -19,7 +19,7 @@ var (
 
 	Image_Repository inter.ImaRepository     = repositories.NewImageRepository(db)
 	Image_Service    inter.ImageService      = usercase.NewImageService(Image_Repository)
-	Pro_s3           inter.S3ProviderService = usercase.NewS3Provider(usercase.SetUps3ProviderConfig().BucketName, usercase.SetUps3ProviderConfig().Region, usercase.SetUps3ProviderConfig().ApiKey, usercase.SetUps3ProviderConfig().SecrecKey, "")
+	Pro_s3           inter.S3ProviderService = usercase.SetUps3ProviderConfig()
 	Image_Controller inter.ImageController   = controller.NewImageController(Image_Service, Pro_s3)
 )
 

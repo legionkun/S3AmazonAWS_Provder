@@ -15,10 +15,10 @@ func NewImageService(Imarepo inter.ImaRepository) inter.ImageService {
 	}
 }
 
-func (service *Ima_Service) AddNewImage(i dto.GetDataFormImage) {
-	service.ImageRepo.AddNewImage(i)
+func (service *Ima_Service) AddNewImage(i dto.GetDataFormImage) error {
+	return service.ImageRepo.AddNewImage(i)
 }
 
-func (service *Ima_Service) GetData(id uint64, proId uint64) (data dto.GetDatabyIdAndProID) {
+func (service *Ima_Service) GetData(id uint64, proId uint64) (*dto.GetDatabyIdAndProID, error) {
 	return service.ImageRepo.GetImageByIdProduct(id, proId)
 }
